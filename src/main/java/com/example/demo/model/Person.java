@@ -11,6 +11,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
@@ -27,8 +29,8 @@ public class Person {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(columnDefinition = "int(11)", nullable = true)
-	private int age;
+	@Column(nullable = true)
+	private Integer age;
 
 	@Column(columnDefinition = "varchar(50)", nullable = true)
 	private String firstname;
@@ -36,7 +38,8 @@ public class Person {
 	@Column(columnDefinition = "varchar(50)", nullable = true)
 	private String lastname;
 
-	@ManyToMany(mappedBy = "persons")
+	@ManyToMany
+	@JoinTable(name = "person_animals", joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "animals_id", referencedColumnName = "id"))
 	private List<Animal> animals = new ArrayList<>();
 
 	/**

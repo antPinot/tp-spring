@@ -28,7 +28,7 @@ public interface SpeciesRepository extends CrudRepository<Species, Integer> {
 	@Query(value = "SELECT * FROM species ORDER BY common_name ASC", nativeQuery = true)
 	List<Species> findAllOrderedByCommonNameAscSql();
 	
-	@Query(value = "from Species where commonName like %:commonName%")
+	@Query("from Species where commonName like %:commonName%")
 	List<Species> findByCommonNameLikeJpql(@Param("commonName") String commonName);
 
 }

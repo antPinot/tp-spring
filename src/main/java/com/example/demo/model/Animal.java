@@ -16,7 +16,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -47,8 +46,8 @@ public class Animal {
 	@JoinColumn(name = "species_id")
 	private Species specie;
 	
-	@ManyToMany
-	@JoinTable(name = "person_animals", joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "animals_id", referencedColumnName = "id"))
+	@ManyToMany(mappedBy = "animals")
+	//@JoinTable(name = "person_animals", joinColumns = @JoinColumn(name = "animals_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"))
 	private List<Person> persons = new ArrayList<>();
 
 	/**Getter pour l'attribut id

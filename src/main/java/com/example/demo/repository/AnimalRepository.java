@@ -26,7 +26,10 @@ public interface AnimalRepository extends CrudRepository<Animal, Integer> {
 	
 	List<Animal> findByColorIn(List<String> colors);
 	
-	@Query(value = "SELECT COUNT(a) FROM Animal a where a.sex = :sex ")
+	@Query("SELECT COUNT(a) FROM Animal a where a.sex = :sex ")
 	Integer countAnimalsBySex(@Param("sex")Sex sex);
+	
+	@Query("SELECT CASE WHEN (COUNT(a)>0) THEN true ELSE false END FROM Person p JOIN p.animals a WHERE a = :animal")
+	boolean hasAPerson(@Param("animal") Animal animal);
 
 }

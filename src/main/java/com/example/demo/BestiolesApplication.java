@@ -47,9 +47,9 @@ public class BestiolesApplication implements CommandLineRunner {
 		for (Animal animal : animals) {
 			animalsList.add(animal);
 		}
-		
+
 		List<Species> speciesList = new ArrayList<>();
-		
+
 		for (Species specie : species) {
 			speciesList.add(specie);
 		}
@@ -65,7 +65,14 @@ public class BestiolesApplication implements CommandLineRunner {
 		personToAdd.setAge(23);
 		personToAdd.setAnimals(animalsList);
 
-		// personRepository.save(personToAdd);
+		personRepository.save(personToAdd);
+
+		Animal animalWithNoOwner = new Animal();
+		animalWithNoOwner.setName("Dibu");
+		
+		animalRepository.save(animalWithNoOwner);
+		
+		animalsList.add(animalWithNoOwner);
 
 		for (Person person : persons) {
 			System.out.println("Person : " + person.getFirstname());
@@ -86,41 +93,65 @@ public class BestiolesApplication implements CommandLineRunner {
 		System.out.println("Il y a " + StreamSupport.stream(personRepository.findAll().spliterator(), false).count()
 				+ " personnes en base");
 
-		/*System.out.println("La taille de la liste de résultats est de "
-				+ StreamSupport.stream(speciesRepository.findFirstByCommonName("Chien").spliterator(), false).count()
-				+ " résultats");
-		System.out.println(speciesRepository.findFirstByCommonName("Chien").get(0).getCommonName());*/
-		
+		/*
+		 * System.out.println("La taille de la liste de résultats est de " +
+		 * StreamSupport.stream(speciesRepository.findFirstByCommonName("Chien").
+		 * spliterator(), false).count() + " résultats");
+		 * System.out.println(speciesRepository.findFirstByCommonName("Chien").get(0).
+		 * getCommonName());
+		 */
+
 		System.out.println(speciesRepository.findByLatinNameContainsAllIgnoreCase("LuPuS").get(0).getCommonName());
-		
+
 		System.out.println(personRepository.findByFirstnameOrLastname("Jean-Clair", null).get(0).getFirstname());
-		
+
 		List<Person> resultatAgePlusGrand = personRepository.findByAgeGreaterThanEqual(44);
-		
+
 		System.out.println("Il y a " + resultatAgePlusGrand.size() + " personnes de plus de 44 ans");
-		
+
 		for (Person person : resultatAgePlusGrand) {
 			System.out.println(person.getFirstname() + " " + person.getLastname());
 		}
-		
+
 		List<Animal> resultatsAnimaux = animalRepository.findBySpecie(speciesList.get(0));
-		
+
 		resultatsAnimaux.forEach(a -> System.out.println(a.getName()));
-		
-		List<String> colors = new ArrayList<>(Arrays.asList("Brun","Roux", "Arc-en-ciel" ));
-		
+
+		List<String> colors = new ArrayList<>(Arrays.asList("Brun", "Roux", "Arc-en-ciel"));
+
 		List<Animal> resultatsAnimauxCouleur = animalRepository.findByColorIn(colors);
-		
+
 		resultatsAnimauxCouleur.forEach(a -> System.out.println(a.getName()));
-		
+
 		speciesRepository.findAllOrderedByCommonNameAscSql().forEach(s -> System.out.println(s.getCommonName()));
-		
+
 		speciesRepository.findByCommonNameLikeJpql("hie").forEach(s -> System.out.println(s.getCommonName()));
-		
-		personRepository.findBetweenMinAgeAndMaxAge(25, 70).forEach(p -> System.out.println(p.getFirstname() + " " + p.getLastname()));
-		
+
+		personRepository.findBetweenMinAgeAndMaxAge(25, 70)
+				.forEach(p -> System.out.println(p.getFirstname() + " " + p.getLastname()));
+
 		System.out.println("Nombre de femelles : " + animalRepository.countAnimalsBySex(Sex.F));
+
+		personRepository.findAllPersonsByAnimal(animalsList.get(0))
+				.forEach(p -> System.out.println(p.getFirstname() + " " + p.getLastname()));
 		
+		Person noAnimalPerson = new Person();
+		noAnimalPerson.setFirstname("Dibu");
+		noAnimalPerson.setLastname("Martinez le gamin");
+		personRepository.save(noAnimalPerson);
+
+		personRepository.supprimerPersonnesSansAnimaux();
+
+		for (Animal animal : animalsList) {
+			if (animalRepository.hasAPerson(animal)) {
+				System.out.println(animal.getName() + " a un propriétaire");
+			} else {
+				System.out.println(animal.getName() + " n'a pas de propriétaire");
+			}
+		}
+
+		personRepository.ajouterPersonnes(2);
+
 	}
 
 }

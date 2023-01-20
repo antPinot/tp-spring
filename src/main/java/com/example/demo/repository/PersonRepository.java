@@ -10,6 +10,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.model.Animal;
 import com.example.demo.model.Person;
 
 /**
@@ -18,13 +19,16 @@ import com.example.demo.model.Person;
  */
 
 @Repository
-public interface PersonRepository extends CrudRepository<Person, Integer> {
+public interface PersonRepository extends CrudRepository<Person, Integer> , PersonRepositoryCustom{
 	
 	List<Person> findByFirstnameOrLastname(String firstname, String lastname);
 	
 	List<Person> findByAgeGreaterThanEqual(int age);
 	
-	@Query(value = "from Person where age between :minAge and :maxAge")
+	@Query("from Person where age between :minAge and :maxAge")
 	List<Person> findBetweenMinAgeAndMaxAge(@Param("minAge") int minAge, @Param("maxAge")  int maxAge);
+	
+	@Query("SELECT DISTINCT p FROM Person p JOIN p.animals a WHERE a = :animal")
+	List<Person> findAllPersonsByAnimal(@Param("animal") Animal animal);
 
 }
