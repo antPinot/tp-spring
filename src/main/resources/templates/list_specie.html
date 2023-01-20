@@ -1,0 +1,38 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<link rel="stylesheet" href="@{/css/main.css}">
+	<meta charset="UTF-8">
+	<title>Liste des espèces</title>
+</head>
+
+<body>
+	<h1>Liste des espèces</h1>
+	<table class="mainTable">
+		<thead>
+			<tr>
+				<th>Nom commun</th>
+				<th>Nom latin</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="specie : ${speciesList}">
+				<td th:text="${specie.commonName}"></td>
+				<td th:text="${specie.latinName}"></td>
+				<td><a th:href="@{'/species/' + ${specie.id}}"> Mettre à jour</a></td>
+				<td><a th:href="@{'/species/delete/' + ${specie.id}}"
+						onclick="return confirm('Êtes vous sur de supprimer cette espèce?')"> Supprimer</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<button type="button" onclick="window.location='/species/create'">Ajouter une Espèce</button>
+	<button type="button" onclick="window.location='/person'">Liste des personnes</button>
+	<button type="button" onclick="window.location='/animal'">Liste des animaux</button>
+
+
+
+
+</body>
+
+</html>
