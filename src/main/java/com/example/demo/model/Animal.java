@@ -20,6 +20,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * @author antPinot
@@ -35,9 +38,13 @@ public class Animal {
 	private Integer id;
 	
 	@Column(columnDefinition = "varchar(50)", nullable = true)
+	@NotBlank
+	@Size(max = 50)
 	private String color;
 	
 	@Column(columnDefinition = "varchar(50)", nullable = true)
+	@NotBlank
+	@Size(max = 50)
 	private String name;
 	
 	@Enumerated(EnumType.STRING)
@@ -45,6 +52,8 @@ public class Animal {
 	
 	@ManyToOne
 	@JoinColumn(name = "species_id")
+	@NotNull
+	@JsonIgnoreProperties("animals")
 	private Species specie;
 	
 	@ManyToMany(mappedBy = "animals")
@@ -122,6 +131,20 @@ public class Animal {
 		this.persons = persons;
 	}
 
+	/**Getter pour l'attribut specie
+	 * @return the specie
+	 */
+	public Species getSpecie() {
+		return specie;
+	}
+
+	/**Setter pour l'attribut specie
+	 * @param specie the specie to set
+	 */
+	public void setSpecie(Species specie) {
+		this.specie = specie;
+	}
+
 	/*@Override
 	public String toString() {
 		return "Animal [id=" + id + ", color=" + color + ", name=" + name + ", sex=" + sex + ", specie=" + specie
@@ -129,5 +152,7 @@ public class Animal {
 	}
 	
 	*/
+	
+	
 
 }

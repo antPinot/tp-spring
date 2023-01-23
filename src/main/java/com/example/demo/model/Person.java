@@ -17,6 +17,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * @author antPinot
@@ -31,13 +36,20 @@ public class Person {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(columnDefinition = "int(11)", nullable = true)
+	@Column(nullable = true)
+	@NotNull
+	@Max(150)
+	@Min(0)
 	private Integer age;
 
 	@Column(columnDefinition = "varchar(50)", nullable = true)
+	@NotBlank
+	@Size(max = 50)
 	private String firstname;
 
 	@Column(columnDefinition = "varchar(50)", nullable = true)
+	@NotBlank
+	@Size(max = 50)
 	private String lastname;
 
 	@ManyToMany

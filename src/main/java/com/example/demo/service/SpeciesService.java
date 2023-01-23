@@ -4,15 +4,17 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.SpeciesNotFoundException;
 import com.example.demo.model.Species;
 import com.example.demo.repository.SpeciesRepository;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 
 /**
  * @author antPinot
@@ -26,13 +28,16 @@ public class SpeciesService {
 	private SpeciesRepository speciesRepository;
 
 	// Create
-	public Species createSpecie(@Valid Species specieToCreate) {
+	public Species createSpecie(Species specieToCreate) throws NullPointerException{
+		if (specieToCreate == null) {
+			throw new NullPointerException();
+		}
 		return speciesRepository.save(specieToCreate);
 	}
 
 	// Read
-	public Species findById(Integer id) {
-		return speciesRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+	public Species findById(Integer id) throws SpeciesNotFoundException{
+		return speciesRepository.findById(id).orElseThrow(() -> new SpeciesNotFoundException(id));
 	}
 	
 	// Read All
@@ -41,14 +46,26 @@ public class SpeciesService {
 	}
 
 	// Update
-	public Species updateSpecie(@Valid Species specieToUpdate) {
+	public Species updateSpecie(Species specieToUpdate) {
 		return speciesRepository.save(specieToUpdate);
 	}
 	
 	//Delete
-	public void deleteSpecie(@Valid Species specieToDelete) {
-		speciesRepository.delete(specieToDelete);
+	public void deleteSpecie(Integer id) throws SpeciesNotFoundException{
+		Optional<Species> specieToDelete = speciesRepository.findById(id);
+		if (specieToDelete.isPresent()) {
+			speciesRepository.delete(specieToDelete.get());
+		}else {
+			throw new SpeciesNotFoundException(id);
+		}
 	}
+	
+	//Pagination
+	
+	public Page<Species> findAllPageable(Pageable pageable){
+		return speciesRepository.findAll(pageable);
+	}
+	
 
 	// Méthodes "passe-plat"
 	public List<Species> findFirstByCommonName(String commonName) {

@@ -6,6 +6,8 @@ package com.example.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +15,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * @author antPinot
@@ -28,12 +32,17 @@ public class Species {
 	private Integer id;
 
 	@Column(name = "common_name", columnDefinition = "varchar(50)", nullable = true)
+	@NotBlank
+	@Size(max = 50)
 	private String commonName;
 
 	@Column(name = "latin_name", columnDefinition = "varchar(200)", nullable = true)
+	@NotBlank
+	@Size(max = 200)
 	private String latinName;
 
 	@OneToMany(mappedBy = "specie")
+	@JsonIgnoreProperties("specie")
 	private List<Animal> animals = new ArrayList<>();
 
 	/**
@@ -108,11 +117,11 @@ public class Species {
 		this.animals = animals;
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		return "Species [id=" + id + ", commonName=" + commonName + ", latinName=" + latinName + ", animals=" + animals
 				+ "]";
-	}
+	}*/
 	
 
 }

@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.PersonNotFoundException;
 import com.example.demo.model.Animal;
 import com.example.demo.model.Person;
 import com.example.demo.repository.PersonRepository;
-
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 
 /**
  * @author antPinot
@@ -28,13 +28,16 @@ public class PersonService {
 	private PersonRepository personRepository;
 	
 	//Create
-	public Person create(@Valid Person personToCreate) {
+	public Person create(Person personToCreate) throws NullPointerException{
+		if(personToCreate == null) {
+			throw new NullPointerException();
+		}
 		return personRepository.save(personToCreate);
 	}
 	
 	//Read
-	public Person findById(Integer id) throws EntityNotFoundException {
-		return personRepository.findById(id).orElseThrow(EntityNotFoundException :: new);
+	public Person findById(Integer id) throws PersonNotFoundException {
+		return personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
 	}
 	
 	//ReadAll
@@ -43,16 +46,23 @@ public class PersonService {
 	}
 	
 	//Update
-	public Person update(@Valid Person personToUpdate) {
+	public Person update(Person personToUpdate) {
 		return personRepository.save(personToUpdate);
 	}
 	
 	//Delete
-	public void delete(Integer id) {
+	public void delete(Integer id) throws PersonNotFoundException {
 		Optional<Person> personToDelete = personRepository.findById(id);
 		if (personToDelete.isPresent()) {
 			personRepository.delete(personToDelete.get());
-		}	
+		}else {
+			throw new PersonNotFoundException(id);
+		}
+	}
+	
+	//Pagination
+	public Page<Person> findAllPageable(Pageable pageable){
+		return personRepository.findAll(pageable);
 	}
 	
 	// Méthodes "passe-plat"
